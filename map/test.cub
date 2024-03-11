@@ -1,0 +1,19 @@
+
+EA img/exit.xpm
+WE img/item_2.xpm
+NO img/player_front.xpm
+
+
+         F                  23,150,100
+
+C 6,5,255
+SO img/enemy_front.xpm
+
+
+11111111
+111
+1N01
+11111
+
+
+

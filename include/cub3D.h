@@ -1,0 +1,91 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cub3D.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/07 16:38:27 by picatrai          #+#    #+#             */
+/*   Updated: 2024/03/12 00:45:50 by picatrai         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef CUB3D_H
+# define CUB3D_H
+
+# include <mlx.h>
+# include <X11/keysym.h>
+# include <X11/X.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <fcntl.h>
+
+# define WINDOW_WIDTH 500
+# define WINDOW_HEIGHT 500
+# define ERROR_ATOI_HEXA -1
+# define SIZE_IMG 500 //peut etre on peut definir une seule et unique taille d'image que l'on accepte
+
+enum error
+{
+    SUCCESS = 0,
+    ERROR,
+    ERROR_PARSING,
+};
+
+enum img
+{
+    NORTH = 0,
+    SOUTH,
+    EAST,
+    WEST,
+};
+
+enum color
+{
+    FLOOR = 0,
+    CELLING,
+};
+
+typedef struct s_coord
+{
+    struct s_coord *prev;
+    struct s_coord *next;
+    int x;
+    int y;
+} t_coord;
+
+typedef struct s_img
+{
+	void	*mlx_img;
+	int		width;
+	int		height;
+}	t_img;
+
+typedef struct s_start
+{
+    char direction;
+    int x;
+    int y;
+} t_start;
+
+typedef struct s_data
+{
+    t_img       img[4];
+    int         color[2];
+    char        **map;
+    t_start     start;
+    void        *mlx_ptr;
+    void        *win_ptr;
+} t_data;
+
+int ft_parsing(int argc, char **argv, t_data *data);
+char	**ft_split(char *str, char *charset);
+void	free_2d(char **str);
+int ft_occ(char *str, char c);
+t_coord *ft_new_coord(int x, int y);
+t_coord  *ft_last_coord(t_coord *coord);
+int ft_add_back_coord(t_coord **coord, t_coord *new);
+void ft_free_coord(t_coord *coord);
+
+#endif
