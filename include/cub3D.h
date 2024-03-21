@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:38:27 by picatrai          #+#    #+#             */
-/*   Updated: 2024/03/21 11:11:58 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/03/21 12:16:08 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # define WINDOW_WIDTH 500
 # define WINDOW_HEIGHT 500
 # define ERROR_ATOI_HEXA -1
-# define SIZE_IMG 300
+# define SIZE_IMG 50
 
 enum error
 {
