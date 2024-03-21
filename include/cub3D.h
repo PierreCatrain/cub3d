@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:38:27 by picatrai          #+#    #+#             */
-/*   Updated: 2024/03/12 00:45:50 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/03/21 09:06:04 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # define WINDOW_WIDTH 500
 # define WINDOW_HEIGHT 500
 # define ERROR_ATOI_HEXA -1
-# define SIZE_IMG 500 //peut etre on peut definir une seule et unique taille d'image que l'on accepte
+# define SIZE_IMG 50
 
 enum error
 {
@@ -57,9 +57,13 @@ typedef struct s_coord
 
 typedef struct s_img
 {
-	void	*mlx_img;
+	void	*img_ptr;
+    char    *addr;
 	int		width;
 	int		height;
+    int     bits_per_pixel;
+    int     size_line;
+    int     endian;
 }	t_img;
 
 typedef struct s_start

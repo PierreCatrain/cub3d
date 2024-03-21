@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:08:37 by picatrai          #+#    #+#             */
-/*   Updated: 2024/03/12 00:45:47 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/03/21 10:27:07 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -343,7 +343,7 @@ int check_and_sort_split(char **split[6])
 void ft_free_while_create_xpm(t_data *data, char **split[6], int index)
 {
     while (--index >= 0)
-        free(data->img[index].mlx_img);
+        free(data->img[index].img_ptr);
     free_mega_split(split, 6);
 }
 
@@ -455,6 +455,75 @@ int ft_get_color(char **split[6], t_data *data)
     return (SUCCESS);
 }
 
+void    ft_free_all_img_except_null(t_img img[4])
+{
+    int index;
+
+    index = -1;
+    while (++index < 4)
+    {
+        if (img[index].img_ptr != NULL)
+            free(img[index].img_ptr);
+        if (img[index].addr != NULL)
+            free(img[index].addr);
+    }
+}
+
+void *ft_new_img(t_img *img, t_data *data)
+{
+    void *new;
+    int index;
+    float index_actual;
+    int bits_per_pixel;
+    int size_line;
+    int endian;
+    char *actual_addr;
+    int x;
+    int y;
+
+    new = mlx_new_image(data->mlx_ptr, SIZE_IMG, SIZE_IMG);
+    if (new == NULL)
+        return (free(img->img_ptr), NULL);
+    img->addr = mlx_get_data_addr(new, &img->bits_per_pixel, &img->size_line, &img->endian);
+    if (img->addr == NULL)
+        return (free(new), free(img->img_ptr), NULL);
+    actual_addr = mlx_get_data_addr(img->img_ptr, &bits_per_pixel, &size_line, &endian);
+    if (actual_addr == NULL)
+        return (free(new), free(img->img_ptr), NULL);
+    printf("str %s et len %d\n", img->addr, ft_strlen(img->addr));
+    x = -1;
+    while (++x < SIZE_IMG)
+    {
+        y = -1;
+        while (++y < SIZE_IMG)
+        {
+            index = (y * img->size_line) + (x * (img->bits_per_pixel / 8));
+            index_actual = (y * img->size_line * ((float)img->height / SIZE_IMG)) + (x * (img->bits_per_pixel / 8) * ((float)img->width / SIZE_IMG));
+            printf("index %d | index actuel %f\n", index, index_actual);
+            img->addr[index] = actual_addr[(int)index_actual];
+            img->addr[index + 1] = actual_addr[(int)index_actual + 1];
+            img->addr[index + 2] = actual_addr[(int)index_actual + 2];
+        }
+    }
+    return (new);
+}
+
+int ft_redimension_img(t_img img[4], t_data *data)
+{
+    int index;
+
+    index = -1;
+    while (++index < 4)
+    {
+        img[index].img_ptr = ft_new_img(&img[index], data);
+        if (img[index].img_ptr == NULL)
+            return (ft_free_all_img_except_null(img), ERROR);
+        img[index].height = SIZE_IMG;
+        img[index].width = SIZE_IMG;        
+    }
+    return (SUCCESS);
+}
+
 int ft_get_texture(char **file, t_data *data)
 {
     char **six_line;
@@ -476,10 +545,19 @@ int ft_get_texture(char **file, t_data *data)
     index = -1;
     while (++index < 4)
     {
-        data->img[index].mlx_img = mlx_xpm_file_to_image(data->mlx_ptr, split[index][1], &data->img[index].width, &data->img[index].height);
-        if (data->img[index].mlx_img == NULL)
+        data->img[index].img_ptr = mlx_xpm_file_to_image(data->mlx_ptr, split[index][1], &data->img[index].width, &data->img[index].height);
+        if (data->img[index].img_ptr == NULL)
             return (ft_free_while_create_xpm(data, split, index), ERROR);
+        data->img[index].addr = NULL;
     }
+    //test
+    mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img[0].img_ptr, 0, 0);
+    //fin test
+    if (ft_redimension_img(data->img, data) != SUCCESS)
+        return (free_mega_split(split, 6), ERROR);
+    //test
+    mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img[0].img_ptr, 25, 0);
+    //fin test
     if (ft_get_color(split, data) != SUCCESS)
         return (ft_free_while_create_xpm(data, split, 4), ERROR);
     return (free_mega_split(split, 6), SUCCESS);
@@ -492,7 +570,7 @@ void ft_free_img(t_data *data)
     index = 0;
     while (index < 4)
     {
-        free(data->img[index].mlx_img);
+        free(data->img[index].img_ptr);
         index++;
     }
 }

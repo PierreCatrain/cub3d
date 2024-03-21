@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:39:11 by picatrai          #+#    #+#             */
-/*   Updated: 2024/03/11 18:43:15 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/03/21 09:06:59 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,13 @@ int main(int argc, char **argv)
 		return (free(data.mlx_ptr), ERROR);
     if (ft_parsing(argc, argv, &data) != SUCCESS)
         return (free(data.mlx_ptr), free(data.win_ptr), ERROR_PARSING);
+    while (1)
+        usleep(200);
     //les truc a free
-    free(data.img[0].mlx_img);
-    free(data.img[1].mlx_img);
-    free(data.img[2].mlx_img);
-    free(data.img[3].mlx_img);
+    free(data.img[0].img_ptr);
+    free(data.img[1].img_ptr);
+    free(data.img[2].img_ptr);
+    free(data.img[3].img_ptr);
     free_2d(data.map);
     free(data.win_ptr);
     free(data.mlx_ptr);
