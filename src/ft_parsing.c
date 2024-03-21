@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:08:37 by picatrai          #+#    #+#             */
-/*   Updated: 2024/03/21 10:27:07 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/03/21 12:10:32 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -469,43 +469,39 @@ void    ft_free_all_img_except_null(t_img img[4])
     }
 }
 
-void *ft_new_img(t_img *img, t_data *data)
+int ft_new_img(t_img *img, t_data *data)
 {
-    void *new;
+    t_img tmp;
     int index;
-    float index_actual;
-    int bits_per_pixel;
-    int size_line;
-    int endian;
-    char *actual_addr;
+    int index_actual;
     int x;
     int y;
 
-    new = mlx_new_image(data->mlx_ptr, SIZE_IMG, SIZE_IMG);
-    if (new == NULL)
-        return (free(img->img_ptr), NULL);
-    img->addr = mlx_get_data_addr(new, &img->bits_per_pixel, &img->size_line, &img->endian);
+    tmp.img_ptr = mlx_new_image(data->mlx_ptr, SIZE_IMG, SIZE_IMG);
+    if (tmp.img_ptr == NULL)
+        return (ERROR);// destroy
+    tmp.addr = mlx_get_data_addr(tmp.img_ptr, &tmp.bits_per_pixel, &tmp.size_line, &tmp.endian);
+    if (tmp.addr == NULL)
+        return (ERROR);// destroy
+    img->addr = mlx_get_data_addr(img->img_ptr, &img->bits_per_pixel, &img->size_line, &img->endian);
     if (img->addr == NULL)
-        return (free(new), free(img->img_ptr), NULL);
-    actual_addr = mlx_get_data_addr(img->img_ptr, &bits_per_pixel, &size_line, &endian);
-    if (actual_addr == NULL)
-        return (free(new), free(img->img_ptr), NULL);
-    printf("str %s et len %d\n", img->addr, ft_strlen(img->addr));
+        return (ERROR);// destroy
     x = -1;
     while (++x < SIZE_IMG)
     {
         y = -1;
         while (++y < SIZE_IMG)
         {
-            index = (y * img->size_line) + (x * (img->bits_per_pixel / 8));
-            index_actual = (y * img->size_line * ((float)img->height / SIZE_IMG)) + (x * (img->bits_per_pixel / 8) * ((float)img->width / SIZE_IMG));
-            printf("index %d | index actuel %f\n", index, index_actual);
-            img->addr[index] = actual_addr[(int)index_actual];
-            img->addr[index + 1] = actual_addr[(int)index_actual + 1];
-            img->addr[index + 2] = actual_addr[(int)index_actual + 2];
+            index = (y * tmp.size_line) + (x * (tmp.bits_per_pixel / 8));
+            index_actual = ((int)(y * ((float)img->height / SIZE_IMG)) * img->size_line) + ((int)(x * ((float)img->width / SIZE_IMG)) * (img->bits_per_pixel / 8));
+            tmp.addr[index] = img->addr[index_actual];
+            tmp.addr[index + 1] = img->addr[index_actual + 1];
+            tmp.addr[index + 2] = img->addr[index_actual + 2];
         }
-    }
-    return (new);
+    }      
+    mlx_destroy_image(data->mlx_ptr, img->img_ptr);
+    *img = tmp;
+    return (SUCCESS);
 }
 
 int ft_redimension_img(t_img img[4], t_data *data)
@@ -515,8 +511,7 @@ int ft_redimension_img(t_img img[4], t_data *data)
     index = -1;
     while (++index < 4)
     {
-        img[index].img_ptr = ft_new_img(&img[index], data);
-        if (img[index].img_ptr == NULL)
+        if (ft_new_img(&img[index], data) != SUCCESS)
             return (ft_free_all_img_except_null(img), ERROR);
         img[index].height = SIZE_IMG;
         img[index].width = SIZE_IMG;        

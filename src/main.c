@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:39:11 by picatrai          #+#    #+#             */
-/*   Updated: 2024/03/21 09:06:59 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/03/21 12:09:56 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int main(int argc, char **argv)
         return (free(data.mlx_ptr), free(data.win_ptr), ERROR_PARSING);
     while (1)
         usleep(200);
-    //les truc a free
+    //les truc a free ou destroy
     free(data.img[0].img_ptr);
     free(data.img[1].img_ptr);
     free(data.img[2].img_ptr);
