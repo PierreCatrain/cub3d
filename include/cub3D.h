@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:38:27 by picatrai          #+#    #+#             */
-/*   Updated: 2024/03/21 12:16:08 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/15 14:08:50 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ typedef struct s_img
 typedef struct s_start
 {
     char direction;
-    int x;
-    int y;
+    double x;
+    double y;
 } t_start;
 
 typedef struct s_data
