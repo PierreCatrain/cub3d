@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:38:27 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/15 14:08:50 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/16 21:28:38 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
+# include <math.h>
 
 # define WINDOW_WIDTH 500
 # define WINDOW_HEIGHT 500
@@ -81,6 +82,12 @@ typedef struct s_data
     t_start     start;
     void        *mlx_ptr;
     void        *win_ptr;
+    double      posX;
+    double      posY;
+    double      dirX;
+    double      dirY;
+    double      planeX;
+    double      planeY;
 } t_data;
 
 int ft_parsing(int argc, char **argv, t_data *data);
@@ -91,5 +98,7 @@ t_coord *ft_new_coord(int x, int y);
 t_coord  *ft_last_coord(t_coord *coord);
 int ft_add_back_coord(t_coord **coord, t_coord *new);
 void ft_free_coord(t_coord *coord);
+void	ft_printf_2d(char **str);
+void ft_raycast(t_data data);
 
 #endif
