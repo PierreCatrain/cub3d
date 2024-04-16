@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+         #
+#    By: lgarfi <lgarfi@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/07 16:35:51 by picatrai          #+#    #+#              #
-#    Updated: 2024/03/07 16:50:55 by picatrai         ###   ########.fr        #
+#    Updated: 2024/04/15 14:51:26 by lgarfi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c $(header) | obj_dir_create
 all: $(NAME)
 
 $(NAME):  $(OBJ)
+	make -C ./minilibx-linux
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(MINIFLAGS)
 	@echo "\n\033[1;33mAll objects have been created\033[0m"
 
@@ -44,10 +45,12 @@ obj_dir_create:
 
 clean:
 	rm -rf $(OBJ) ./obj
+	make -C ./minilibx-linux clean
 	@echo "\033[1;33mAll objects have been deleted\033[0m\n"
 
 fclean: clean
 	rm -f $(NAME)
+	./minilibx-linux/configure clean
 	@echo "\033[1;33mExecutable have been deleted\033[0m\n"
 
 re: fclean all

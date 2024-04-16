@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3D.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lgarfi <lgarfi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:38:27 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/15 14:08:50 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/16 21:50:21 by lgarfi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,21 @@ typedef struct s_data
     void        *mlx_ptr;
     void        *win_ptr;
 } t_data;
+
+typedef struct s_ray
+{
+	double	posX;
+	double	posY;
+	double	dirX;
+	double	dirY;
+	double	planeX;
+	double	planeY;
+	double	cameraX;
+	double	deltaDistX;
+	double	deltaDistY;
+	int		mapX;
+	int		mapY;
+}	t_ray;
 
 int ft_parsing(int argc, char **argv, t_data *data);
 char	**ft_split(char *str, char *charset);

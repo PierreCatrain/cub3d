@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_parsing.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lgarfi <lgarfi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:08:37 by picatrai          #+#    #+#             */
-/*   Updated: 2024/03/21 12:10:32 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/16 21:11:47 by lgarfi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -546,12 +546,12 @@ int ft_get_texture(char **file, t_data *data)
         data->img[index].addr = NULL;
     }
     //test
-    mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img[0].img_ptr, 0, 0);
+    // mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img[0].img_ptr, 0, 0);
     //fin test
     if (ft_redimension_img(data->img, data) != SUCCESS)
         return (free_mega_split(split, 6), ERROR);
     //test
-    mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img[0].img_ptr, 25, 0);
+    // mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img[0].img_ptr, 25, 0);
     //fin test
     if (ft_get_color(split, data) != SUCCESS)
         return (ft_free_while_create_xpm(data, split, 4), ERROR);
