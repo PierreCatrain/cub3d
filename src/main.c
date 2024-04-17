@@ -6,7 +6,7 @@
 /*   By: lgarfi <lgarfi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:39:11 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/17 20:22:07 by lgarfi           ###   ########.fr       */
+/*   Updated: 2024/04/17 22:15:59 by lgarfi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ void	ft_draw_line(int drawStart, int drawEnd, t_data data, int x)
 
 void	ft_raycast(t_ray *ray, t_data data, int map[24][24])
 {
-  double posX = 22, posY = 12;
-  double dirX = -1, dirY = 0;
-  double planeX = 0, planeY = 0.66;
+	double posX = 1, posY = 12;
+	double dirX = 0, dirY = 1;
+	double planeX = 0, planeY = 0.66;
 
-	int		x = -1;
+	int		x;
 	int		w = 500;
 	double	h = w;
 	while (1)
@@ -38,20 +38,19 @@ void	ft_raycast(t_ray *ray, t_data data, int map[24][24])
 		x = -1;
 		while (++x <= w)
 		{
-			ray->cameraX = 2 * x / w - 1;
+			ray->cameraX = 2 * x / (double) w - 1;
 			ray->raydirX = dirX + planeX * ray->cameraX;
 			ray->raydirY = dirY + planeY * ray->cameraX;
-			ray->mapX = posX;
-			ray->mapY = posY;
 			if (ray->raydirX == 0)
 				ray->raydirX = 1e30;
 			if (ray->raydirY == 0)
 				ray->raydirY = 1e30;
-			ray->deltaDistX = sqrt(1 + (ray->raydirX * ray->raydirX) / (ray->raydirY * ray->raydirY));
-			ray->deltaDistY = sqrt(1 + (ray->raydirY * ray->raydirY) / (ray->raydirX * ray->raydirX));
+			printf("raydirX %f | raydirY %f | x %d\n", ray->raydirX, ray->raydirY, x);
+			ray->deltaDistX = sqrt(1 + (ray->raydirY * ray->raydirY) / (ray->raydirX * ray->raydirX));
+			ray->deltaDistY = sqrt(1 + (ray->raydirX * ray->raydirX) / (ray->raydirY * ray->raydirY));
+			printf("deltaDistX %f | deltaDistY %f | x %d\n",ray->deltaDistX, ray->deltaDistY, x);
 			ray->mapX = posX;
 			ray->mapY = posY;
-			ray->hit = 0;
 			if (ray->raydirX < 0)
 			{
 				ray->stepX = -1;
@@ -73,6 +72,8 @@ void	ft_raycast(t_ray *ray, t_data data, int map[24][24])
 				ray->sideDistY = (ray->mapY + 1.0 - posY) * ray->deltaDistY;
 			}
 			ray->hit = 0;
+			printf("sideDistX %f | sideDistY %f | x %d\n", ray->sideDistX, ray->sideDistY, x);
+			printf("steX %d | stepY %d\n", ray->stepX, ray->stepY);
 			while (ray->hit == 0)
 			{
 				if (ray->sideDistX < ray->sideDistY)
@@ -87,13 +88,14 @@ void	ft_raycast(t_ray *ray, t_data data, int map[24][24])
 					ray->mapY += ray->stepY;
 					ray->side = 1;
 				}
+				// printf("mapX %d | mapY %d | x %d\n", ray->mapX, ray->mapY, x);
 				if (map[ray->mapX][ray->mapY] > '0')
 					ray->hit = 1;
 			}
 			if (ray->side == 0)
-				ray->perpwallDist = ray->sideDistX - ray->sideDistX;
+				ray->perpwallDist = ray->sideDistX - ray->deltaDistX;
 			else
-				ray->perpwallDist = ray->sideDistY - ray->sideDistX;
+				ray->perpwallDist = ray->sideDistY - ray->deltaDistY;
 			ray->lineHeight = (int) (h / ray->perpwallDist);
 			ray->drawStart = -ray->lineHeight / 2 + h / 2;
 			if (ray->drawStart < 0)
@@ -139,7 +141,6 @@ int worldMap[24][24]=
   {1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
   {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-
 //   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 //   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 //   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -164,11 +165,7 @@ int worldMap[24][24]=
 //   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 //   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 //   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-
 };
-
-
-	
     if (envp[0] == NULL)
 		return (1);
     data.mlx_ptr = mlx_init();
