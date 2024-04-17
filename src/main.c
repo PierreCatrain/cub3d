@@ -6,7 +6,7 @@
 /*   By: lgarfi <lgarfi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:39:11 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/17 20:12:10 by lgarfi           ###   ########.fr       */
+/*   Updated: 2024/04/17 20:22:07 by lgarfi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	ft_raycast(t_ray *ray, t_data data, int map[24][24])
 		x = -1;
 		while (++x <= w)
 		{
-			ray->cameraX = 2 * x / (double) w - 1;
+			ray->cameraX = 2 * x / w - 1;
 			ray->raydirX = dirX + planeX * ray->cameraX;
 			ray->raydirY = dirY + planeY * ray->cameraX;
 			ray->mapX = posX;
@@ -47,7 +47,6 @@ void	ft_raycast(t_ray *ray, t_data data, int map[24][24])
 				ray->raydirX = 1e30;
 			if (ray->raydirY == 0)
 				ray->raydirY = 1e30;
-			printf("cam x %f | raydirX %f | raydirY %f | x %d\n", ray->cameraX, ray->raydirX, ray->raydirY, x);
 			ray->deltaDistX = sqrt(1 + (ray->raydirX * ray->raydirX) / (ray->raydirY * ray->raydirY));
 			ray->deltaDistY = sqrt(1 + (ray->raydirY * ray->raydirY) / (ray->raydirX * ray->raydirX));
 			ray->mapX = posX;
