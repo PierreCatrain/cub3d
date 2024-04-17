@@ -6,55 +6,82 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 21:14:30 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/16 22:07:36 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/17 20:18:15 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 #include <math.h>
 
-void ft_drawline(int x, int drawStart, int drawEnd, int color, t_data data)
+void    ft_put_my_pixel(t_data *data, int x, int y, int color)
 {
-    while (drawStart < drawEnd)
-    {
-        mlx_pixel_put(data.mlx_ptr, data.win_ptr, x, drawStart, color);
-        drawStart++;
-    }
+    int index;
+    
+    (void)color;
+    index = ((y * (data->screen.size_line / 4)) + x) * 4;
+    data->screen.addr[index] = 50;
+    data->screen.addr[index + 1] = 50;
+    data->screen.addr[index + 2] = 100;
 }
 
-void ft_raycast(t_data data)
+void ft_drawline(int x, int drawStart, int drawEnd, int color, t_data *data)
 {
-    data.posX = data.start.x;
-    data.posY = data.start.y;
-    data.dirX = 0;
-    data.dirY = 1;
-    data.planeX = 0.66;
-    data.planeY = 0;
+    // drawEnd = drawStart + 2;
+    while (drawStart < drawEnd)
+    {
+        ft_put_my_pixel(data, x, drawStart, color);
+        // mlx_pixel_put(data->mlx_ptr, data->win_ptr, x, drawStart, color);
+        drawStart++;
+        // printf("ici\n");
+    }
+    // mlx_pixel_put(data.mlx_ptr, data.win_ptr, x, drawStart, color);
+    // (void)drawEnd;
+}
 
+int ft_raycast(t_data *data)
+{
+    int index;
+    for (int i = 0; i < 500; i++)
+    {
+        for (int j = 0; j < 500; j++)
+        {
+            index = ((j * (data->screen.size_line / 4)) + i) * 4;
+            data->screen.addr[index] = 0;
+            data->screen.addr[index + 1] = 0;
+            data->screen.addr[index + 2] = 0;
+            data->screen.addr[index + 3] = 1;
+        }
+    }
     double time = 0;
     double oldTime = 0;
 
-    while (1)
+    double tmp;
+    
+    tmp = 0;
+    while (tmp < 1)
     {
-        int w = 2 * data.planeX * 200;
-        for(int x = 0; x < w; x++)
+        data->posX += tmp;
+        tmp += 0.1;
+        int w = 2 * data->planeX * 200;
+        w = 500;
+        for(int x = 0; x < 500; x++)
         {
         //calculate ray position and direction
         double cameraX = 2 * x / (double)w - 1; //x-coordinate in camera space
-        double rayDirX = data.dirX + data.planeX * cameraX;
-        double rayDirY = data.dirY + data.planeY * cameraX;
+        double rayDirX = data->dirX + data->planeX * cameraX;
+        double rayDirY = data->dirY + data->planeY * cameraX;
 
         //which box of the map we're in
-        int mapX = (int)data.posX;
-        int mapY = (int)data.posY;
+        int mapX = (int)data->posX;
+        int mapY = (int)data->posY;
 
         //length of ray from current position to next x or y-side
         double sideDistX;
         double sideDistY;
 
         //length of ray from one x or y-side to next x or y-side
-        double deltaDistX = sqrt((double)(1 + (rayDirY * rayDirY) / (rayDirX * rayDirX)));
-        double deltaDistY = sqrt((double)(1 + (rayDirX * rayDirX) / (rayDirY * rayDirY)));
+        double deltaDistX = sqrt((1 + (rayDirY * rayDirY) / (rayDirX * rayDirX)));
+        double deltaDistY = sqrt((1 + (rayDirX * rayDirX) / (rayDirY * rayDirY)));
         double perpWallDist;
 
         //what direction to step in x or y-direction (either +1 or -1)
@@ -68,22 +95,22 @@ void ft_raycast(t_data data)
         if(rayDirX < 0)
         {
             stepX = -1;
-            sideDistX = (data.posX - mapX) * deltaDistX;
+            sideDistX = (data->posX - mapX) * deltaDistX;
         }
         else
         {
             stepX = 1;
-            sideDistX = (mapX + 1.0 - data.posX) * deltaDistX;
+            sideDistX = (mapX + 1.0 - data->posX) * deltaDistX;
         }
         if(rayDirY < 0)
         {
             stepY = -1;
-            sideDistY = (data.posY - mapY) * deltaDistY;
+            sideDistY = (data->posY - mapY) * deltaDistY;
         }
         else
         {
             stepY = 1;
-            sideDistY = (mapY + 1.0 - data.posY) * deltaDistY;
+            sideDistY = (mapY + 1.0 - data->posY) * deltaDistY;
         }
         //perform DDA
         while (hit == 0)
@@ -102,8 +129,10 @@ void ft_raycast(t_data data)
             side = 1;
             }
             //Check if ray has hit a wall
-            if(data.map[mapX][mapY] > 0) hit = 1;
+            if(data->map[mapX][mapY] == '1')
+                hit = 1;
         }
+        // printf("%d et %f et %f\n", x, sideDistX, sideDistY);
 
         //Calculate distance of perpendicular ray (Euclidean distance would give fisheye effect!)
         if(side == 0) perpWallDist = (sideDistX - deltaDistX);
@@ -111,7 +140,7 @@ void ft_raycast(t_data data)
 
         int h = 500;
         //Calculate height of line to draw on screen
-        int lineHeight = (int)(h / perpWallDist);
+        int lineHeight = (int)((double)(0.5 * h) / perpWallDist);
 
 
         // int pitch = 100;
@@ -122,13 +151,15 @@ void ft_raycast(t_data data)
         int drawEnd = lineHeight / 2 + h / 2;
         if(drawEnd >= h) drawEnd = h - 1;
 
+        // printf("%d et %f et %f et %d et %f et %f\n", x, perpWallDist, perpWallDist, side, sideDistX, deltaDistX);
         //choose wall color
         int color;
-        switch(data.map[mapX][mapY])
+        // printf("ici %c pour x %d et y %d\n", data.map[mapX][mapY], mapX, mapY);
+        switch(data->map[mapX][mapY])
         {
-            case 1:  color = data.color[FLOOR];    break; //red
-            case 0:  color = data.color[CELLING];  break; //green
-            default: color = data.color[CELLING]; break; //yellow
+            case 1:  color = data->color[FLOOR];    break; //red
+            case 0:  color = data->color[CELLING];  break; //green
+            default: color = data->color[FLOOR]; break; //yellow
         }
 
         //give x and y sides different brightness
@@ -137,8 +168,11 @@ void ft_raycast(t_data data)
         //draw the pixels of the stripe as a vertical line
         ft_drawline(x, drawStart, drawEnd, color, data);
         }
+        // printf("ici\n");
+        mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->screen.img_ptr, 0, 0);
         //timing for input and FPS counter
         oldTime = time;
         break ;
     }
+    return (0);
 }

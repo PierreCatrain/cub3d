@@ -4,9 +4,9 @@ WE img/item_2.xpm
 NO img/Untitled.xpm
 
 
-         F                  23,150,100
+         F                  23,150,20
 
-C 6,5,255
+C 96,215,255
 SO img/enemy_front.xpm
 
 
