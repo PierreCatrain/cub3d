@@ -6,7 +6,7 @@
 /*   By: lgarfi <lgarfi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:38:27 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/16 21:50:21 by lgarfi           ###   ########.fr       */
+/*   Updated: 2024/04/17 18:43:58 by lgarfi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
+# include <math.h>
 
 # define WINDOW_WIDTH 500
 # define WINDOW_HEIGHT 500
@@ -87,8 +88,8 @@ typedef struct s_ray
 {
 	double	posX;
 	double	posY;
-	double	dirX;
-	double	dirY;
+	double	raydirX;
+	double	raydirY;
 	double	planeX;
 	double	planeY;
 	double	cameraX;
@@ -96,6 +97,17 @@ typedef struct s_ray
 	double	deltaDistY;
 	int		mapX;
 	int		mapY;
+	int		stepX;
+	int		stepY;
+	double	sideDistX;
+	double	sideDistY;
+	int		hit;
+	int		side;
+	double	perpwallDist;
+	int		lineHeight;
+	double	h;
+	int		drawStart;
+	int		drawEnd;
 }	t_ray;
 
 int ft_parsing(int argc, char **argv, t_data *data);

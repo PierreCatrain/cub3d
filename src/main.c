@@ -6,44 +6,169 @@
 /*   By: lgarfi <lgarfi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:39:11 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/16 21:49:46 by lgarfi           ###   ########.fr       */
+/*   Updated: 2024/04/17 20:12:10 by lgarfi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-void	ft_raycast(t_ray *ray)
+void	ft_draw_line(int drawStart, int drawEnd, t_data data, int x)
 {
-	int	x;
-	double rayDirX;
-	double rayDirY;
-	
+	int	start = drawStart;
+	int	end = drawEnd;
 
-	x = 0;
-	ray->posX = 0;
-	ray->posY = 0;
-	ray->dirX = -1;
-	ray->dirY = 0;
-	ray->planeX = 0;
-	ray->planeY = 0.66;
-	while (x < 30)
+	while (start < end)
 	{
-		ray->cameraX = 2 * x / 30 - 1;
-		rayDirX = ray->dirX + ray->planeX * ray->cameraX;
-		rayDirY = ray->dirY + ray->planeY * ray->cameraX;
-		if (rayDirX == 0.0)
-			rayDirX = 1e30;
-		else if (rayDirY == 0.0)
-			rayDirY = 1e30;
-		ray->deltaDistX = abs(1 / rayDirX);
-		ray->deltaDistY = abs(1 / rayDirY);
+		mlx_pixel_put(data.mlx_ptr, data.win_ptr, x, start, 0x00FFFFFF);
+		start++;
 	}
+}
+
+void	ft_raycast(t_ray *ray, t_data data, int map[24][24])
+{
+  double posX = 22, posY = 12;
+  double dirX = -1, dirY = 0;
+  double planeX = 0, planeY = 0.66;
+
+	int		x = -1;
+	int		w = 500;
+	double	h = w;
+	while (1)
+	{
+		x = -1;
+		while (++x <= w)
+		{
+			ray->cameraX = 2 * x / (double) w - 1;
+			ray->raydirX = dirX + planeX * ray->cameraX;
+			ray->raydirY = dirY + planeY * ray->cameraX;
+			ray->mapX = posX;
+			ray->mapY = posY;
+			if (ray->raydirX == 0)
+				ray->raydirX = 1e30;
+			if (ray->raydirY == 0)
+				ray->raydirY = 1e30;
+			printf("cam x %f | raydirX %f | raydirY %f | x %d\n", ray->cameraX, ray->raydirX, ray->raydirY, x);
+			ray->deltaDistX = sqrt(1 + (ray->raydirX * ray->raydirX) / (ray->raydirY * ray->raydirY));
+			ray->deltaDistY = sqrt(1 + (ray->raydirY * ray->raydirY) / (ray->raydirX * ray->raydirX));
+			ray->mapX = posX;
+			ray->mapY = posY;
+			ray->hit = 0;
+			if (ray->raydirX < 0)
+			{
+				ray->stepX = -1;
+				ray->sideDistX = (posX - ray->mapX) * ray->deltaDistX;
+			}
+			else
+			{
+				ray->stepX = 1;
+				ray->sideDistX = (ray->mapX + 1.0 - posX) * ray->deltaDistX;
+			}
+			if (ray->raydirY < 0)
+			{
+				ray->stepY = -1;
+				ray->sideDistY = (posY - ray->mapY) * ray->deltaDistY;
+			}
+			else
+			{
+				ray->stepY = 1;
+				ray->sideDistY = (ray->mapY + 1.0 - posY) * ray->deltaDistY;
+			}
+			ray->hit = 0;
+			while (ray->hit == 0)
+			{
+				if (ray->sideDistX < ray->sideDistY)
+				{
+					ray->sideDistX += ray->deltaDistX;
+					ray->mapX += ray->stepX;
+					ray->side = 0;
+				}
+				else
+				{
+					ray->sideDistY += ray->deltaDistY;
+					ray->mapY += ray->stepY;
+					ray->side = 1;
+				}
+				if (map[ray->mapX][ray->mapY] > '0')
+					ray->hit = 1;
+			}
+			if (ray->side == 0)
+				ray->perpwallDist = ray->sideDistX - ray->sideDistX;
+			else
+				ray->perpwallDist = ray->sideDistY - ray->sideDistX;
+			ray->lineHeight = (int) (h / ray->perpwallDist);
+			ray->drawStart = -ray->lineHeight / 2 + h / 2;
+			if (ray->drawStart < 0)
+				ray->drawStart = 0;
+			ray->drawEnd = ray->lineHeight / 2 + h / 2;
+			if (ray->drawEnd >= h)
+				ray->drawEnd = h - 1;
+			ft_draw_line(ray->drawStart, ray->drawEnd, data, x);
+		}
+		break ;
+	}
+
 }
 
 int main(int argc, char **argv, char **envp)
 {
     t_data	data;
 	t_ray	ray;
+	
+int worldMap[24][24]=
+{
+  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,2,2,2,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
+  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,3,0,0,0,3,0,0,0,1},
+  {1,0,0,0,0,0,2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,2,2,0,2,2,0,0,0,0,3,0,3,0,3,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,4,0,0,0,0,5,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,4,0,4,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,4,0,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+
+//   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+//   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+
+};
+
+
 	
     if (envp[0] == NULL)
 		return (1);
@@ -55,9 +180,9 @@ int main(int argc, char **argv, char **envp)
 		return (free(data.mlx_ptr), ERROR);
     if (ft_parsing(argc, argv, &data) != SUCCESS)
         return (free(data.mlx_ptr), free(data.win_ptr), ERROR_PARSING);
+    ft_raycast(&ray, data, worldMap);
     while (1)
-        usleep(200);
-	
+		;
     //les truc a free ou destroy
     free(data.img[0].img_ptr);
     free(data.img[1].img_ptr);

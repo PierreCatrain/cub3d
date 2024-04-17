@@ -6,14 +6,14 @@
 #    By: lgarfi <lgarfi@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/07 16:35:51 by picatrai          #+#    #+#              #
-#    Updated: 2024/04/15 14:51:26 by lgarfi           ###   ########.fr        #
+#    Updated: 2024/04/17 16:08:42 by lgarfi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = cub3D
 CC = cc
 CFLAGS = -Wall -Werror -Wextra -g3
-MINIFLAGS = -L minilibx-linux -lmlx -lXext -lX11
+MINIFLAGS = -L minilibx-linux -lmlx -lXext -lX11 -lm
 SRCDIR = src
 OBJDIR = obj
 SRC = $(wildcard $(SRCDIR)/**/*.c $(SRCDIR)/*.c)
