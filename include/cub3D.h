@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:38:27 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/17 18:42:08 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/19 01:15:07 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 # include <fcntl.h>
 # include <math.h>
 
-# define WINDOW_WIDTH 500
-# define WINDOW_HEIGHT 500
+# define WINDOW_WIDTH 900
+# define WINDOW_HEIGHT 600
 # define ERROR_ATOI_HEXA -1
 # define SIZE_IMG 50
 
@@ -67,19 +67,12 @@ typedef struct s_img
     int     endian;
 }	t_img;
 
-typedef struct s_start
-{
-    char direction;
-    double x;
-    double y;
-} t_start;
-
 typedef struct s_data
 {
     t_img       img[4];
     int         color[2];
+    int   RGB[2][3];
     char        **map;
-    t_start     start;
     void        *mlx_ptr;
     void        *win_ptr;
     double      posX;

@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:08:37 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/16 21:13:44 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/18 23:48:46 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -418,23 +418,28 @@ long	ft_atoi_hexa(char *str)
 	return (resultat);
 }
 
-int ft_transfo_color(int *hexa, char *entry)
+int ft_transfo_color(int *hexa, char *entry, t_data *data)
 {
     char **RGB;
     int     index;
     int rgb_int[3];
+    static int passage = -1;
 
+    passage++;
     RGB = ft_split(entry, ",");
     if (RGB == NULL)
         return (ERROR);
     if (ft_strlen_2d(RGB) != 3)
         return (free_2d(RGB), ERROR);
     index = 0;
+    (void)data;
     while (index < 3)
     {
         rgb_int[index] = ft_atoi_hexa(RGB[index]);
         if (rgb_int[index] == ERROR_ATOI_HEXA)
             return (free_2d(RGB), ERROR);
+        data->RGB[passage][index] = rgb_int[index];
+        printf("%d et %d et %d\n", data->RGB[passage][index], rgb_int[index], index);
         index++;
     }
     *hexa = (rgb_int[0] << 16) + (rgb_int[1] << 8) + rgb_int[2];
@@ -448,7 +453,7 @@ int ft_get_color(char **split[6], t_data *data)
     index = 4;
     while (index <= 5)
     {
-        if (ft_transfo_color(&data->color[index - 4], split[index][1]) != SUCCESS)
+        if (ft_transfo_color(&data->color[index - 4], split[index][1], data) != SUCCESS)
             return (ERROR);
         index++;
     }
@@ -727,10 +732,37 @@ void ft_get_start_data(t_data *data)
         {
             if (ft_occ("NSEW", data->map[index][index_mini]) != 0)
             {
+                data->posX = index;
+                data->posY = index_mini;
+                if (data->map[index][index_mini] == 'N')
+                {
+                    data->dirX = -1;
+                    data->dirY = 0;
+                    data->planeX = 0;
+                    data->planeY = 0.66; 
+                }
+                if (data->map[index][index_mini] == 'S')
+                {
+                    data->dirX = 1;
+                    data->dirY = 0;
+                    data->planeX = 0;
+                    data->planeY = -0.66; 
+                }
+                if (data->map[index][index_mini] == 'E')
+                {
+                    data->dirX = 0;
+                    data->dirY = 1;
+                    data->planeX = 0.66;
+                    data->planeY = 0;
+                }
+                if (data->map[index][index_mini] == 'W')
+                {
+                    data->dirX = 0;
+                    data->dirY = -1;
+                    data->planeX = -0.66;
+                    data->planeY = 0;
+                }
                 data->map[index][index_mini] = '0';
-                data->start.direction = data->map[index][index_mini];
-                data->start.x = index;
-                data->start.y = index_mini;
                 return ;
             }
         }
@@ -910,9 +942,9 @@ int ft_is_close_and_one_block(t_data *data, char **cpy)
     int len;
 
     coord = NULL;
-    if (ft_add_back_coord(&coord, ft_new_coord(data->start.x + 1, data->start.y + 1)) != SUCCESS)
+    if (ft_add_back_coord(&coord, ft_new_coord(data->posX + 1, data->posY + 1)) != SUCCESS)
         return (ERROR);
-    if (ft_get_coord(&coord, data->start.x + 1, data->start.y + 1, cpy) != SUCCESS)
+    if (ft_get_coord(&coord, data->posX + 1, data->posY + 1, cpy) != SUCCESS)
         return (ft_free_coord(coord), ERROR);
     len = 0;
     while (coord != NULL)

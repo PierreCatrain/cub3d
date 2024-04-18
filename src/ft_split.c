@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 19:20:48 by picatrai          #+#    #+#             */
-/*   Updated: 2024/03/08 19:01:33 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/18 19:35:07 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,5 +110,6 @@ char	**ft_split(char *str, char *charset)
 		&& str[i + 1] != '\0')
 			new = 1;
 	}
-	return (split[++j] = 0, split);
+	split[++j] = NULL;
+	return (split);
 }
