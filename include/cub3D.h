@@ -6,7 +6,7 @@
 /*   By: lgarfi <lgarfi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:38:27 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/18 15:33:52 by lgarfi           ###   ########.fr       */
+/*   Updated: 2024/04/18 23:42:01 by lgarfi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,9 @@
 # define WINDOW_HEIGHT 500
 # define ERROR_ATOI_HEXA -1
 # define SIZE_IMG 50
+
+#define ROWS 24
+#define COLS 24
 
 enum error
 {
@@ -83,7 +86,7 @@ typedef struct s_data
 {
     t_img       img[4];
     int         color[2];
-    char        **map;
+    char        **pas_ma_map;
     t_start     start;
     void        *mlx_ptr;
     void        *win_ptr;
@@ -92,8 +95,11 @@ typedef struct s_data
 
 typedef struct s_ray
 {
+	char	**map;
 	double	posX;
 	double	posY;
+	double	dirX;
+	double	dirY;
 	double	raydirX;
 	double	raydirY;
 	double	planeX;
