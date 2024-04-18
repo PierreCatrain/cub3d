@@ -6,7 +6,7 @@
 /*   By: lgarfi <lgarfi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:38:27 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/17 18:43:58 by lgarfi           ###   ########.fr       */
+/*   Updated: 2024/04/18 15:33:52 by lgarfi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,11 @@ typedef struct s_coord
     int y;
 } t_coord;
 
+typedef struct	s_vars {
+	void	*mlx;
+	void	*win;
+}				t_vars;
+
 typedef struct s_img
 {
 	void	*img_ptr;
@@ -82,6 +87,7 @@ typedef struct s_data
     t_start     start;
     void        *mlx_ptr;
     void        *win_ptr;
+	t_vars		vars;
 } t_data;
 
 typedef struct s_ray
@@ -105,7 +111,7 @@ typedef struct s_ray
 	int		side;
 	double	perpwallDist;
 	int		lineHeight;
-	double	h;
+	int		h;
 	int		drawStart;
 	int		drawEnd;
 }	t_ray;
