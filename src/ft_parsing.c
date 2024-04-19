@@ -6,7 +6,7 @@
 /*   By: lgarfi <lgarfi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:08:37 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/18 23:37:51 by lgarfi           ###   ########.fr       */
+/*   Updated: 2024/04/19 13:14:06 by lgarfi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -720,14 +720,14 @@ void ft_get_start_data(t_data *data)
     int index_mini;
 
     index = -1;
-    while (data->pas_ma_map[++index])
+    while (data->map[++index])
     {
         index_mini = -1;
-        while (data->pas_ma_map[index][++index_mini])
+        while (data->map[index][++index_mini])
         {
-            if (ft_occ("NSEW", data->pas_ma_map[index][index_mini]) != 0)
+            if (ft_occ("NSEW", data->map[index][index_mini]) != 0)
             {
-                data->start.direction = data->pas_ma_map[index][index_mini];
+                data->start.direction = data->map[index][index_mini];
                 data->start.x = index;
                 data->start.y = index_mini;
                 return ;
@@ -921,7 +921,7 @@ int ft_is_close_and_one_block(t_data *data, char **cpy)
             break;
         coord = coord->next;
     }
-    if (len != ft_nb_case(data->pas_ma_map))
+    if (len != ft_nb_case(data->map))
         return (ft_free_coord(coord), ERROR);
     return (ft_free_coord(coord), SUCCESS);
 }
@@ -930,7 +930,7 @@ int ft_check_border(t_data *data)
 {
     char **cpy;
 
-    if (ft_cpy_with_frame(data->pas_ma_map, &cpy) != SUCCESS)
+    if (ft_cpy_with_frame(data->map, &cpy) != SUCCESS)
         return (ERROR);
     ft_printf_2d(cpy);
     if (ft_is_close_and_one_block(data, cpy) != SUCCESS)
@@ -940,17 +940,17 @@ int ft_check_border(t_data *data)
 
 int ft_get_map(char **file, t_data *data)
 {
-    if (ft_get_after_six_line_without_start_end(&data->pas_ma_map, file) != SUCCESS)
+    if (ft_get_after_six_line_without_start_end(&data->map, file) != SUCCESS)
         return (ERROR);
-    if (ft_condition_no_line_empty(data->pas_ma_map) != SUCCESS)
-        return (free_2d(data->pas_ma_map), ERROR);
-    if (ft_condtion_no_unknown_character(data->pas_ma_map, "10NSEW ") != SUCCESS)
-        return (free_2d(data->pas_ma_map), ERROR);
-    if (ft_only_one_player(data->pas_ma_map) != SUCCESS)
-        return (free_2d(data->pas_ma_map), ERROR);
+    if (ft_condition_no_line_empty(data->map) != SUCCESS)
+        return (free_2d(data->map), ERROR);
+    if (ft_condtion_no_unknown_character(data->map, "10NSEW ") != SUCCESS)
+        return (free_2d(data->map), ERROR);
+    if (ft_only_one_player(data->map) != SUCCESS)
+        return (free_2d(data->map), ERROR);
     ft_get_start_data(data);
     if (ft_check_border(data) != SUCCESS)
-        return (free_2d(data->pas_ma_map), ERROR);
+        return (free_2d(data->map), ERROR);
     return (SUCCESS);
 }
 

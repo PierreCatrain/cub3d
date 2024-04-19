@@ -6,7 +6,7 @@
 /*   By: lgarfi <lgarfi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:39:11 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/18 23:45:09 by lgarfi           ###   ########.fr       */
+/*   Updated: 2024/04/19 17:04:29 by lgarfi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,142 +24,118 @@ void	ft_draw_line(int drawStart, int drawEnd, t_data data, int x)
 	}
 }
 
-void	ft_raycast(t_ray *ray, t_data data, char **map)
+void	ft_raycast(t_data *data, char **map)
 {
-	double planeX = 0, planeY = 0.66;
-
-	ray->posX = 20;
-	ray->posY = 2;
-	ray->raydirX = -1;
-	ray->raydirY = 0;
+	data->ray.posX = 20;
+	data->ray.posY = 12;
+	data->ray.raydirX = -1;
+	data->ray.raydirY = 0;
 	int		x;
 	int		w = 500;
-	double	h;
+	double h;
 	x = -1;
+	data->ray.planeX = 0;
+	data->ray.planeY = 0.66;
 	while (++x < w)
 	{
-		ray->cameraX = 2 * x / (double) w - 1;
-		ray->raydirX = ray->dirX + planeX * ray->cameraX;
-		ray->raydirY = ray->dirY + planeY * ray->cameraX;
-		if (ray->raydirX == 0)
-			ray->deltaDistX = 1e30;
+		data->ray.cameraX = 2 * x / (double) w - 1;
+		data->ray.raydirX = data->ray.dirX + data->ray.planeX * data->ray.cameraX;
+		data->ray.raydirY = data->ray.dirY + data->ray.planeY * data->ray.cameraX;
+		if (data->ray.raydirX == 0)
+			data->ray.deltaDistX = 1e30;
 		else
-			ray->deltaDistX = fabs(1 / ray->raydirX);
-		if (ray->raydirY == 0)
-			ray->deltaDistY = 1e30;
+			data->ray.deltaDistX = sqrt(1 + (data->ray.raydirY * data->ray.raydirY) / (data->ray.raydirX * data->ray.raydirX));
+
+		if (data->ray.raydirY == 0)
+			data->ray.deltaDistY = 1e30;
 		else
-			ray->deltaDistY = fabs(1 / ray->raydirY);
-		ray->mapX = (int) ray->posX;
-		ray->mapY = (int) ray->posY;
-		if (ray->raydirX < 0)
+			data->ray.deltaDistY = sqrt(1 + (data->ray.raydirX * data->ray.raydirX) / (data->ray.raydirY * data->ray.raydirY));
+		data->ray.mapX = (int) data->ray.posX;
+		data->ray.mapY = (int) data->ray.posY;
+		printf("raydirX %f\n", data->ray.raydirX);
+		if (data->ray.raydirX < 0)
 		{
-			ray->stepX = -1;
-			ray->sideDistX = (ray->posX - ray->mapX) * ray->deltaDistX;
+			data->ray.stepX = -1;
+			data->ray.sideDistX = (data->ray.posX - data->ray.mapX) * data->ray.deltaDistX;
 		}
 		else
 		{
-			ray->stepX = 1;
-			ray->sideDistX = (ray->mapX + 1.0 - ray->posX) * ray->deltaDistX;
+			data->ray.stepX = 1;
+			data->ray.sideDistX = (data->ray.mapX + 1.0 - data->ray.posX) * data->ray.deltaDistX;
 		}
-		if (ray->raydirY < 0)
+		if (data->ray.raydirY < 0)
 		{
-			ray->stepY = -1;
-			ray->sideDistY = (ray->posY - ray->mapY) * ray->deltaDistY;
+			data->ray.stepY = -1;
+			data->ray.sideDistY = (data->ray.posY - data->ray.mapY) * data->ray.deltaDistY;
 		}
 		else
 		{
-			ray->stepY = 1;
-			ray->sideDistY = (ray->mapY + 1.0 - ray->posY) * ray->deltaDistY;
+			data->ray.stepY = 1;
+			data->ray.sideDistY = (data->ray.mapY + 1.0 - data->ray.posY) * data->ray.deltaDistY;
 		}
-		ray->hit = 0;
-		while (ray->hit == 0)
+		data->ray.hit = 0;
+		// printf("sideX %f | sideY %f | x %d\n", data->ray.raydirX, data->ray.raydirY, x);
+		while (data->ray.hit == 0)
 		{
-			if (ray->sideDistX < ray->sideDistY)
+			if (data->ray.sideDistX < data->ray.sideDistY)
 			{
-				ray->sideDistX += ray->deltaDistX;
-				ray->mapX += ray->stepX;
-				ray->side = 0;
+				data->ray.sideDistX += data->ray.deltaDistX;
+				data->ray.mapX += data->ray.stepX;
+				data->ray.side = 0;
 			}
 			else
 			{
-				ray->sideDistY += ray->deltaDistY;
-				ray->mapY += ray->stepY;
-				ray->side = 1;
+				data->ray.sideDistY += data->ray.deltaDistY;
+				data->ray.mapY += data->ray.stepY;
+				data->ray.side = 1;
 			}
-			if (map[ray->mapX][ray->mapY] > '0')
-				ray->hit = 1;
+			// printf("mapX %d | mapY %d | x %d\n", data->ray.mapX, data->ray.mapY);
+			if (map[data->ray.mapX][data->ray.mapY] > '0')
+				data->ray.hit = 1;
 		}
-		if (ray->side == 0)
-			ray->perpwallDist = ray->sideDistX - ray->deltaDistX;
+		if (data->ray.side == 0)
+			data->ray.perpwallDist = data->ray.sideDistX - data->ray.deltaDistX;
 		else
-			ray->perpwallDist = ray->sideDistY - ray->deltaDistY;
+			data->ray.perpwallDist = data->ray.sideDistY - data->ray.deltaDistY;
+		// printf("side = %d | perpwalldist %f | x %d\n",data->ray.side, data->ray.perpwallDist, x);
 		h = w;
-		ray->lineHeight = (int) (h / ray->perpwallDist);
-		ray->drawStart = -ray->lineHeight / 2 + h / 2;
-		if (ray->drawStart < 0)
-			ray->drawStart = 0;
-		ray->drawEnd = ray->lineHeight / 2 + h / 2;
-		if (ray->drawEnd >= h)
-			ray->drawEnd = h - 1;
-		ft_draw_line(ray->drawStart, ray->drawEnd, data, x);
+		data->ray.lineHeight = (int) (h / data->ray.perpwallDist);
+		data->ray.drawStart = -data->ray.lineHeight / 2 + h / 2;
+		if (data->ray.drawStart < 0)
+			data->ray.drawStart = 0;
+		data->ray.drawEnd = data->ray.lineHeight / 2 + h / 2;
+		if (data->ray.drawEnd >= h)
+			data->ray.drawEnd = h - 1;
+		// printf("ds %d | de %d | x %d\n", data->ray.drawStart, data->ray.drawEnd, x);
+		ft_draw_line(data->ray.drawStart, data->ray.drawEnd, *data, x);
 	}
 }
 
-int	key_handler(int keysim, t_ray *ray)
-{
-	(void)ray;
-	printf("kc %d\n", keysim);
-	if (keysim == 119) // avance
-	{
-		if (ray->map[(int) (ray->posX + ray->dirX * 0.1)][(int) ray->posY] == 0)
-			ray->posX += ray->dirX * 0.1;
-		if (ray->map[(int) ray->posX][(int) (ray->posY + ray->dirY * 0.1)] == 0)
-			ray->posY += ray->dirY * 0.1;
-	}
-	return (0);
-}
+// int	key_handler(int keysim, t_ray *ray)
+// {
+// 	(void)ray;
+// 	printf("kc %d\n", keysim);
+// 	if (keysim == 119) // avance
+// 	{
+// 		if (data->map[(int) (data->ray.posX + data->ray.dirX * 0.1)][(int) data->ray.posY] == 0)
+// 			data->posX += data->ray.dirX * 0.1;
+// 		if (data->map[(int) data->ray.posX][(int) (data->ray.posY + data->ray.dirY * 0.1)] == 0)
+// 			data->ray.posY += data->ray.dirY * 0.1;
+// 	}
+// 	return (0);
+// }
 
-int	ft_events(t_data *data, t_ray *ray)
-{
-	// mlx_hook(&data->win_ptr, ButtonPress, ButtonPressMask, &key_handler, ray);
-	mlx_hook(data->win_ptr, KeyPress, KeyPressMask, &key_handler, ray);
-	return (0);
-}
+// int	ft_events(t_data *data, t_ray *ray)
+// {
+// 	// mlx_hook(&data->win_ptr, ButtonPress, ButtonPressMask, &key_handler, ray);
+// 	mlx_hook(data->win_ptr, KeyPress, KeyPressMask, &key_handler, ray);
+// 	return (0);
+// }
 
 int main(int argc, char **argv, char **envp)
 {
     t_data	data;
-	t_ray	ray;
 
-	// int worldMap[ROWS][COLS] =
-	// {
-    //     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
-    //     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-    //     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-	// };
-
-	// ray.map = worldMap;
     if (envp[0] == NULL)
 		return (1);
     data.mlx_ptr = mlx_init();
@@ -173,16 +149,16 @@ int main(int argc, char **argv, char **envp)
 		return (free(data.mlx_ptr), free(data.win_ptr), ERROR_PARSING);
 	}
 
-	ray.map = data.pas_ma_map;
-    ft_raycast(&ray, data, ray.map);
-	ft_events(&data, &ray);
-	mlx_loop(data.mlx_ptr);
+    ft_raycast(&data, data.map);
+	// ft_events(&data, &ray);
+	// mlx_loop(data.mlx_ptr);
     //les truc a free ou destroy
+	sleep(2);
     free(data.img[0].img_ptr);
     free(data.img[1].img_ptr);
     free(data.img[2].img_ptr);
     free(data.img[3].img_ptr);
-    free_2d(data.pas_ma_map);
+    free_2d(data.map);
     free(data.win_ptr);
     free(data.mlx_ptr);
     printf("sort");

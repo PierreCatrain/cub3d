@@ -6,7 +6,7 @@
 /*   By: lgarfi <lgarfi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:38:27 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/18 23:42:01 by lgarfi           ###   ########.fr       */
+/*   Updated: 2024/04/19 13:36:26 by lgarfi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef struct	s_vars {
 
 typedef struct s_img
 {
+	char	**map;
 	void	*img_ptr;
     char    *addr;
 	int		width;
@@ -82,20 +83,9 @@ typedef struct s_start
     double y;
 } t_start;
 
-typedef struct s_data
-{
-    t_img       img[4];
-    int         color[2];
-    char        **pas_ma_map;
-    t_start     start;
-    void        *mlx_ptr;
-    void        *win_ptr;
-	t_vars		vars;
-} t_data;
 
 typedef struct s_ray
 {
-	char	**map;
 	double	posX;
 	double	posY;
 	double	dirX;
@@ -121,6 +111,20 @@ typedef struct s_ray
 	int		drawStart;
 	int		drawEnd;
 }	t_ray;
+
+
+
+typedef struct s_data
+{
+    t_img		img[4];
+    int			color[2];
+    char		**map;
+    t_start		start;
+    void		*mlx_ptr;
+    void		*win_ptr;
+	t_vars		vars;
+	t_ray		ray;
+} t_data;
 
 int ft_parsing(int argc, char **argv, t_data *data);
 char	**ft_split(char *str, char *charset);
