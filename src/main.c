@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:39:11 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/18 20:47:04 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/19 16:54:25 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,12 @@ int handle_keypress(int keysym, t_data *data)
         data->posX += data->dirX * moveSpeed;
         data->posY += data->dirY * moveSpeed;
     }
-    if (keysym == 97 && data->map[(int)(data->posX - data->dirY * 2 * moveSpeed)][(int)(data->posY + data->dirX * 2 * moveSpeed)] != '1')
+    if (keysym == 97 && data->map[(int)(data->posX - data->planeX * 2 * moveSpeed)][(int)(data->posY - data->planeY * 2 * moveSpeed)] != '1')
 	{
-        data->posX -= data->dirY * moveSpeed;
-        data->posY += data->dirX * moveSpeed;
+        // data->posX -= data->dirY * moveSpeed;
+        // data->posY += data->dirX * moveSpeed;
+        data->posX -= data->planeX * moveSpeed;
+        data->posY -= data->planeY * moveSpeed;
     }
     
 	if (keysym == 115 && data->map[(int)(data->posX - data->dirX * 2 * moveSpeed)][(int)(data->posY - data->dirY * 2 * moveSpeed)] != '1')
@@ -33,10 +35,12 @@ int handle_keypress(int keysym, t_data *data)
         data->posX -= data->dirX * moveSpeed;
         data->posY -= data->dirY * moveSpeed;
     }	
-    if (keysym == 100 && data->map[(int)(data->posX + data->dirY * 2 * moveSpeed)][(int)(data->posY - data->dirX * 2 * moveSpeed)] != '1')
+    if (keysym == 100 && data->map[(int)(data->posX + data->planeX * 2 * moveSpeed)][(int)(data->posY + data->planeY * 2 * moveSpeed)] != '1')
 	{
-        data->posX += data->dirY * moveSpeed;
-        data->posY -= data->dirX * moveSpeed;
+        // data->posX += data->dirY * moveSpeed;
+        // data->posY -= data->dirX * moveSpeed;
+        data->posX += data->planeX * moveSpeed;
+        data->posY += data->planeY * moveSpeed;
     }
     if (keysym == 65363)
     {
