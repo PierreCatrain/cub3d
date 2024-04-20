@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:38:27 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/20 20:22:33 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/20 22:25:47 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include <fcntl.h>
 # include <math.h>
 
-# define WINDOW_WIDTH 900
+# define WINDOW_WIDTH 1000
 # define WINDOW_HEIGHT 600
 # define ERROR_ATOI_HEXA -1
 # define SIZE_IMG 50
@@ -128,27 +128,27 @@ t_coord *ft_new_coord(int x, int y);
 t_coord  *ft_last_coord(t_coord *coord);
 int ft_add_back_coord(t_coord **coord, t_coord *new);
 void ft_free_coord(t_coord *coord);
-void	ft_printf_2d(char **str);
 int ft_raycast(t_data *data);
 int ft_strlen(char *str);
+void ft_key_manage(t_data *data);
+int handle_keypress(int keysym, t_data *data);
+int handle_keyrelease(int keysym, t_data * data);
+int    ft_handle_mouse(int x, int y, t_data *data);
+void ft_where_to_draw(t_ray *ray, t_data data);
+void ft_which_texture(t_ray *ray, t_data data);
+void ft_complete_screen(t_ray *ray, t_data *data);
+void    ft_destroy_all_except_screen(t_data *data);
+void    ft_destroy_all(t_data *data);
+int    ft_destroy_and_exit(t_data *data);
+void free_mega_split(char **split[6], int index);
+void ft_free_while_create_xpm(t_data *data, char **split[6], int index);
 
+int ft_strlen(char *str);
+int	ft_strlen_2d(char **str);
+char	*ft_strdup(char *str);
+char	**ft_add_to_2d(char **base, char *add);
+char	*ft_join_char(char *str, char c);
+
+int ft_strcmp(char *str1, char *str2);
+void ft_error(char *str);
 #endif
-
-// // void    ft_put_my_pixel(t_data *data, int x, int y, int color)
-// // {
-    
-// // }
-
-// void ft_drawline(int x, int drawStart, int drawEnd, int color, t_data *data)
-// {
-//     // drawEnd = drawStart + 2;
-//     while (drawStart < drawEnd)
-//     {
-//         // ft_put_my_pixel(data, x, drawStart, color);
-//         mlx_pixel_put(data->mlx_ptr, data->win_ptr, x, drawStart, color);
-//         drawStart++;
-//         // printf("ici\n");
-//     }
-//     // mlx_pixel_put(data.mlx_ptr, data.win_ptr, x, drawStart, color);
-//     // (void)drawEnd;
-// }

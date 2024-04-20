@@ -6,41 +6,11 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:08:37 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/20 21:06:24 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/20 21:54:55 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
-
-int ft_strlen(char *str)
-{
-    int index;
-
-    index = 0;
-    while (str[index])
-        index++;
-    return (index);
-}
-
-void ft_error(char *str)
-{
-    write(2, "ERROR\n", 6);
-    write(2, str, ft_strlen(str));
-}
-
-int ft_strcmp(char *str1, char *str2)
-{
-    int index;
-
-    index = 0;
-    while (str1[index] && str2[index])
-    {
-        if (str1[index] != str2[index])
-            break;
-        index++;
-    }
-    return (str1[index] - str2[index]);
-}
 
 int ft_check_dot_cub(char *str, int *fd)
 {
@@ -50,107 +20,6 @@ int ft_check_dot_cub(char *str, int *fd)
     if (*fd == -1)
         return (ERROR);
     return (SUCCESS);
-}
-
-int	ft_strlen_2d(char **str)
-{
-	int	index;
-
-	if (str == NULL)
-		return (0);
-	index = 0;
-	while (str[index])
-		index++;
-	return (index);
-}
-
-void	free_2d(char **str)
-{
-	int	index;
-
-	if (str == NULL)
-		return ;
-	if (str[0] == NULL)
-	{
-		free(str);
-		return ;
-	}
-	index = -1;
-	while (str[++index])
-		free(str[index]);
-	free(str);
-}
-
-char	*ft_strdup(char *str)
-{
-	char	*new;
-	int		index;
-
-	new = malloc((ft_strlen(str) + 1) * sizeof(char));
-	if (new == NULL)
-		return (NULL);
-	index = -1;
-	while (str[++index])
-		new[index] = str[index];
-	new[index] = '\0';
-	return (new);
-}
-
-char	**ft_add_to_2d(char **base, char *add)
-{
-	char	**new;
-	int		index;
-
-    if (add == NULL)
-    {
-        return (free_2d(base), NULL);
-    }
-	new = malloc((ft_strlen_2d(base) + 2) * sizeof(char *));
-	if (new == NULL)
-		return (free_2d(base), NULL);
-	index = 0;
-	while (base != NULL && base[index])
-	{
-		new[index] = ft_strdup(base[index]);
-		if (new[index] == NULL)
-			return (free_2d(base), NULL);
-		index++;
-	}
-	new[index] = ft_strdup(add);
-	if (new[index] == NULL)
-		return (NULL);
-	new[++index] = NULL;
-	if (base != NULL)
-		free_2d(base);
-	return (new);
-}
-
-void	ft_printf_2d(char **str)
-{
-	int	index;
-
-	index = 0;
-	while (str[index])
-	{
-		printf("%s\n", str[index]);
-		index++;
-	}
-}
-
-char	*ft_join_char(char *str, char c)
-{
-	char	*join;
-	int		i;
-
-	join = malloc ((ft_strlen(str) + 2) * sizeof(char));
-	if (join == NULL)
-		return (free(str), NULL);
-	i = -1;
-	while (str[++i])
-		join[i] = str[i];
-	join[i++] = c;
-	join[i] = '\0';
-	return (free(str), join);
 }
 
 int ft_read_file(int fd, char ***file)
@@ -255,12 +124,6 @@ int ft_get_six_first_line(char **file, char ***six_line)
     return (SUCCESS);
 }
 
-void free_mega_split(char **split[6], int index)
-{
-    while (--index >= 0)
-        free_2d(split[index]);
-}
-
 int ft_find_index_split(char **split[6], char *find)
 {
     int index;
@@ -337,64 +200,6 @@ int check_and_sort_split(char **split[6])
         }
     }
     return (ft_sort_split(split));
-}
-
-void ft_free_while_create_xpm(t_data *data, char **split[6], int index)
-{
-    while (--index >= 0)
-        mlx_destroy_image(data->mlx_ptr, data->img[index].img_ptr);
-    free_mega_split(split, 6);
-}
-
-char	*ft_strjoin_hexa(char *str1, char *str2)
-{
-	char	*join;
-	int		i;
-	int		j;
-
-	if (str2 == NULL)
-		return (free(str1), NULL);
-	join = malloc ((ft_strlen(str1) + ft_strlen(str2) + 1) * sizeof(char));
-	if (join == NULL)
-		return (free(str1), free(str2), NULL);
-	i = -1;
-	while (str1[++i])
-		join[i] = str1[i];
-	j = -1;
-	while (str2[++j])
-		join[i + j] = str2[j];
-	join[i + j] = '\0';
-	return (join);
-}
-
-char *ft_convert_hexa(int nb)
-{
-	unsigned int	n;
-	char			*res;
-	int				len;
-    char *str;
-
-	str = "0123456789ABCDEF";
-    if (nb == ERROR_ATOI_HEXA)
-    {
-        return (NULL);
-    }
-	n = nb;
-    len = 2;
-	res = malloc(3 * sizeof(char));
-	if (res == NULL)
-		return (NULL);
-	res[len] = '\0';
-    if (nb < 16)
-    {
-        res[0] = '0';
-    }
-	while (n > 0)
-	{
-		res[--len] = str[n % 16];
-		n /= 16;
-    }
-	return (res);
 }
 
 long	ft_atoi_hexa(char *str)
@@ -562,18 +367,6 @@ int ft_get_texture(char **file, t_data *data)
     if (ft_get_color(split, data) != SUCCESS)
         return (ft_free_while_create_xpm(data, split, 4), ft_destroy_img(data, 4), ft_error("Error with color\n"), ERROR);
     return (free_mega_split(split, 6), SUCCESS);
-}
-
-void ft_free_img(t_data *data)
-{
-    int index;
-
-    index = 0;
-    while (index < 4)
-    {
-        free(data->img[index].img_ptr);
-        index++;
-    }
 }
 
 int ft_get_after_six_line(char ***after_six, char **file)
@@ -995,47 +788,39 @@ int ft_get_map(char **file, t_data *data)
     return (SUCCESS);
 }
 
+void ft_destroy_mlx(t_data *data)
+{
+    mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+    mlx_destroy_display(data->mlx_ptr);
+    free(data->mlx_ptr);
+}
+
 int ft_parsing(int argc, char **argv, t_data *data)
 {
     char **file;
     int fd;
 
     if (argc != 2)
-    {
-        mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-        mlx_destroy_display(data->mlx_ptr);
-        return (ft_error("Wrong number of args\n"), ERROR);
-    }
+        return (ft_destroy_mlx(data), ft_error("Wrong number of args\n"), ERROR);
     if (ft_check_dot_cub(argv[1], &fd) != SUCCESS)
-    {
-        mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-        mlx_destroy_display(data->mlx_ptr);
-        return (ft_error("Use an available .cub\n"), ERROR);
-    }
+        return (ft_destroy_mlx(data), ft_error("Use an available .cub\n"), ERROR);
     if (ft_read_file(fd, &file) != SUCCESS)
     {
-        mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-        mlx_destroy_display(data->mlx_ptr);
         close(fd);
-        return (ft_error("Error while reading the file\n"), ERROR);
+        return (ft_destroy_mlx(data), ft_error("Error while reading the file\n"), ERROR);
     }
     if (ft_get_texture(file, data) != SUCCESS)
     {
-        mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-        mlx_destroy_display(data->mlx_ptr);
         close(fd);
         free_2d(file);
-        return (ERROR);
+        return (ft_destroy_mlx(data), ERROR);
     }
     if (ft_get_map(file, data) != SUCCESS)
     {
         ft_destroy_img(data, 4);
-        mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-        mlx_destroy_display(data->mlx_ptr);
         close(fd);
         free_2d(file);
-        // ft_free_img(data);
-        return (ERROR);
+        return (ft_destroy_mlx(data), ERROR);
     }
     close(fd);
     free_2d(file);
