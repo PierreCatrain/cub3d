@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:38:27 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/20 01:22:28 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/20 20:22:33 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,36 @@ typedef struct s_data
     int         l;
     int         r;
 } t_data;
+
+typedef struct s_ray
+{
+    int w;
+    int x;
+    double cameraX;
+    double rayDirX;
+    double rayDirY;
+    int mapX;
+    int mapY;
+    double sideDistX;
+    double sideDistY;
+    double deltaDistX;
+    double deltaDistY;
+    double perpWallDist;
+    int stepX;
+    int stepY;
+    int hit;
+    int side;
+    int h;
+    int lineHeight;
+    int drawStart;
+    int drawEnd;
+    double wallX;
+    int texX;
+    int texture;
+    double step;
+    int texY;
+    double tmp;
+} t_ray;
 
 int ft_parsing(int argc, char **argv, t_data *data);
 char	**ft_split(char *str, char *charset);

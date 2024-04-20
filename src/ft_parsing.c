@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:08:37 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/20 20:12:00 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/20 21:06:24 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -538,35 +538,29 @@ int ft_get_texture(char **file, t_data *data)
     int index;
 
     if (ft_get_six_first_line(file, &six_line) != SUCCESS)
-        return (ERROR);
+        return (ft_error("Error with number of texture arguments\n"), ERROR);
     index = -1;
     while (++index < 6)
     {
         split[index] = ft_split(six_line[index], " \t\n");
         if (split[index] == NULL)
-            return (free_2d(six_line), free_mega_split(split, index), ERROR);
+            return (free_2d(six_line), free_mega_split(split, index), ft_error("Error with malloc in ft_get_texture\n"), ERROR);
     }
     free_2d(six_line);
     if (check_and_sort_split(split) != SUCCESS)
-        return (free_mega_split(split, 6), ERROR);
+        return (free_mega_split(split, 6), ft_error("Error with value of texture\n"), ERROR);
     index = -1;
     while (++index < 4)
     {
         data->img[index].img_ptr = mlx_xpm_file_to_image(data->mlx_ptr, split[index][1], &data->img[index].width, &data->img[index].height);
         if (data->img[index].img_ptr == NULL)
-            return (ft_free_while_create_xpm(data, split, index), ERROR);
+            return (ft_free_while_create_xpm(data, split, index), ft_error("Error while creating image\n"), ERROR);
         data->img[index].addr = NULL;
     }
-    //test
-    // mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img[0].img_ptr, 0, 0);
-    //fin test
     if (ft_redimension_img(data->img, data) != SUCCESS)
-        return (free_mega_split(split, 6), ft_destroy_img(data, 4), ERROR);
-    //test
-    // mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img[0].img_ptr, 25, 0);
-    //fin test
+        return (free_mega_split(split, 6), ft_destroy_img(data, 4), ft_error("Error with redimension of image\n"), ERROR);
     if (ft_get_color(split, data) != SUCCESS)
-        return (ft_free_while_create_xpm(data, split, 4), ft_destroy_img(data, 4), ERROR);
+        return (ft_free_while_create_xpm(data, split, 4), ft_destroy_img(data, 4), ft_error("Error with color\n"), ERROR);
     return (free_mega_split(split, 6), SUCCESS);
 }
 
@@ -988,16 +982,16 @@ int ft_check_border(t_data *data)
 int ft_get_map(char **file, t_data *data)
 {
     if (ft_get_after_six_line_without_start_end(&data->map, file) != SUCCESS)
-        return (ERROR);
+        return (ft_error("Error with map\n"), ERROR);
     if (ft_condition_no_line_empty(data->map) != SUCCESS)
-        return (free_2d(data->map), ERROR);
+        return (free_2d(data->map), ft_error("Error with map, a line is empty\n"), ERROR);
     if (ft_condtion_no_unknown_character(data->map, "10NSEW ") != SUCCESS)
-        return (free_2d(data->map), ERROR);
+        return (free_2d(data->map), ft_error("Error with map, a character is unknown\n"), ERROR);
     if (ft_only_one_player(data->map) != SUCCESS)
-        return (free_2d(data->map), ERROR);
+        return (free_2d(data->map), ft_error("Error with map, too many players\n"), ERROR);
     ft_get_start_data(data);
     if (ft_check_border(data) != SUCCESS)
-        return (free_2d(data->map), ERROR);
+        return (free_2d(data->map), ft_error("Error with map, bad border\n"), ERROR);
     return (SUCCESS);
 }
 
@@ -1031,7 +1025,7 @@ int ft_parsing(int argc, char **argv, t_data *data)
         mlx_destroy_display(data->mlx_ptr);
         close(fd);
         free_2d(file);
-        return (ft_error("Error with texture\n"), ERROR);
+        return (ERROR);
     }
     if (ft_get_map(file, data) != SUCCESS)
     {
@@ -1041,7 +1035,7 @@ int ft_parsing(int argc, char **argv, t_data *data)
         close(fd);
         free_2d(file);
         // ft_free_img(data);
-        return (ft_error("Error with map\n"), ERROR);
+        return (ERROR);
     }
     close(fd);
     free_2d(file);
