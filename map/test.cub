@@ -1,17 +1,17 @@
 
-EA img/exit.xpm
-WE img/item_2.xpm
-NO img/Untitled.xpm
+NO img/greystone.xpm
+WE img/purplestone.xpm
+EA img/red.xpm
 
 
          F                  255,255,255
 
 C 0,36,225
-SO img/enemy_front.xpm
+SO img/eagle.xpm
 
 
 1111111
-1110011
+1010011
 1000001
 1000001
 100S011

@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:38:27 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/19 01:15:07 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/20 01:22:28 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,12 @@ typedef struct s_data
     double      planeX;
     double      planeY;
     t_img       screen;
+    int         w;
+    int         a;
+    int         s;
+    int         d;
+    int         l;
+    int         r;
 } t_data;
 
 int ft_parsing(int argc, char **argv, t_data *data);
@@ -94,6 +100,7 @@ int ft_add_back_coord(t_coord **coord, t_coord *new);
 void ft_free_coord(t_coord *coord);
 void	ft_printf_2d(char **str);
 int ft_raycast(t_data *data);
+int ft_strlen(char *str);
 
 #endif
 

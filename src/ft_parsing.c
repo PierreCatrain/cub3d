@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:08:37 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/18 23:48:46 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/20 00:51:51 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -498,7 +498,7 @@ int ft_new_img(t_img *img, t_data *data)
         while (++y < SIZE_IMG)
         {
             index = (y * tmp.size_line) + (x * (tmp.bits_per_pixel / 8));
-            index_actual = ((int)(y * ((float)img->height / SIZE_IMG)) * img->size_line) + ((int)(x * ((float)img->width / SIZE_IMG)) * (img->bits_per_pixel / 8));
+            index_actual = ((int)(y * ((double)img->height / SIZE_IMG)) * img->size_line) + ((int)(x * ((double)img->width / SIZE_IMG)) * (img->bits_per_pixel / 8));
             tmp.addr[index] = img->addr[index_actual];
             tmp.addr[index + 1] = img->addr[index_actual + 1];
             tmp.addr[index + 2] = img->addr[index_actual + 2];
