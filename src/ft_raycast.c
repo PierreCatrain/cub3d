@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 21:14:30 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/20 01:54:35 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/20 20:12:41 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,6 @@ void ft_key_manage(t_data *data)
     }
     if (data->a == 1 && data->map[(int)(data->posX - data->planeX * hitbox * moveSpeed)][(int)(data->posY - data->planeY * hitbox * moveSpeed)] != '1' && data->map[(int)(data->posX - 0.05 - data->planeX * hitbox * moveSpeed)][(int)(data->posY - 0.05 - data->planeY * hitbox * moveSpeed)] != '1' && data->map[(int)(data->posX + 0.05 - data->planeX * hitbox * moveSpeed)][(int)(data->posY + 0.05 - data->planeY * hitbox * moveSpeed)] != '1')
 	{
-        // data->posX -= data->dirY * moveSpeed;
-        // data->posY += data->dirX * moveSpeed;
         data->posX -= data->planeX * moveSpeed;
         data->posY -= data->planeY * moveSpeed;
     }
@@ -76,8 +74,6 @@ void ft_key_manage(t_data *data)
     }	
     if (data->d == 1 && data->map[(int)(data->posX + data->planeX * hitbox * moveSpeed)][(int)(data->posY + data->planeY * hitbox * moveSpeed)] != '1' && data->map[(int)(data->posX - 0.05 + data->planeX * hitbox * moveSpeed)][(int)(data->posY - 0.05 + data->planeY * hitbox * moveSpeed)] != '1' && data->map[(int)(data->posX + 0.05 + data->planeX * hitbox * moveSpeed)][(int)(data->posY + 0.05 + data->planeY * hitbox * moveSpeed)] != '1')
     {
-        // data->posX += data->dirY * moveSpeed;
-        // data->posY -= data->dirX * moveSpeed;
         data->posX += data->planeX * moveSpeed;
         data->posY += data->planeY * moveSpeed;
     }
@@ -189,18 +185,6 @@ int ft_raycast(t_data *data)
                 hit = 1;
         }
         
-        // if(side == 0)
-        //     perpWallDist = (sideDistX - deltaDistX);
-        // else
-        //     perpWallDist = (sideDistY - deltaDistY);
-        
-        // if(side == 0)
-        //     perpWallDist = (sideDistX - deltaDistX);
-        // else
-        //     perpWallDist = (sideDistY - deltaDistY);
-        
-        // if (side == 0)
-        //     printf("%f et %f et %f et ", perpWallDist, rayDirX, rayDirY);
 
         if (side == 0)
             perpWallDist = ((double)mapX - data->posX + (1 - (double)stepX) / 2) / rayDirX;
@@ -214,25 +198,16 @@ int ft_raycast(t_data *data)
 
         int drawStart = -lineHeight / 2 + h / 2;
         int drawEnd = lineHeight / 2 + h / 2;
-        // if(drawStart < 0)
-        //     drawStart = 0;
-        // if(drawEnd >= h)
-        //     drawEnd = h - 1;
         
         int color = 62;
         if(side == 1)
             color = color / 2;
-        // ft_drawline(x, drawStart, drawEnd, color, data);
 
-        // if (side == 0)
-        //     printf(" et |%f et %f et %f|", data->posY, perpWallDist, rayDirY);
         double wallX;
         if (side == 0)
             wallX = data->posY + (perpWallDist * rayDirY);
         else
             wallX = data->posX + (perpWallDist * rayDirX);
-        // if (side == 0)
-        //     printf(" et |%f et %d|\n", wallX, x);
         wallX -= floor((wallX));
 
         int texX = (int)(wallX * (double)(SIZE_IMG));

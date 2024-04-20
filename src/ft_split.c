@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 19:20:48 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/18 19:35:07 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/20 20:12:14 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,14 @@ int	ft_mega_malloc(char *str, char *charset)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] != '\0' && ft_occ(charset, str[i]) == 0 && (str[i + 1] == '\0' \
+		if (ft_occ(charset, str[i]) != 0 && (str[i + 1] == '\0' \
 					|| ft_occ(charset, str[i + 1]) == 0))
 			count++;
 		i++;
 	}
 	return (count);
 }
+
 
 int	ft_mini_malloc(char *str, char *charset, int i)
 {
@@ -91,7 +92,7 @@ char	**ft_split(char *str, char *charset)
 	int		j;
 	int		new;
 
-	split = malloc((ft_mega_malloc(str, charset) + 1) * sizeof(char *));
+	split = malloc((ft_mega_malloc(str, charset) + 2) * sizeof(char *));
 	if (split == NULL)
 		return (NULL);
 	i = -1;

@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:08:37 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/20 00:51:51 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/20 20:12:00 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -333,7 +333,6 @@ int check_and_sort_split(char **split[6])
     {
         if (tab[index] == 0)
         {
-            printf("index %d\n", index);
             return (ERROR);
         }
     }
@@ -343,7 +342,7 @@ int check_and_sort_split(char **split[6])
 void ft_free_while_create_xpm(t_data *data, char **split[6], int index)
 {
     while (--index >= 0)
-        free(data->img[index].img_ptr);
+        mlx_destroy_image(data->mlx_ptr, data->img[index].img_ptr);
     free_mega_split(split, 6);
 }
 
@@ -439,7 +438,6 @@ int ft_transfo_color(int *hexa, char *entry, t_data *data)
         if (rgb_int[index] == ERROR_ATOI_HEXA)
             return (free_2d(RGB), ERROR);
         data->RGB[passage][index] = rgb_int[index];
-        printf("%d et %d et %d\n", data->RGB[passage][index], rgb_int[index], index);
         index++;
     }
     *hexa = (rgb_int[0] << 16) + (rgb_int[1] << 8) + rgb_int[2];
@@ -524,6 +522,15 @@ int ft_redimension_img(t_img img[4], t_data *data)
     return (SUCCESS);
 }
 
+void ft_destroy_img(t_data *data, int index)
+{
+    int i = index;
+    while (--i >= 0)
+    {
+        mlx_destroy_image(data->mlx_ptr, data->img[i].img_ptr);
+    }
+}
+
 int ft_get_texture(char **file, t_data *data)
 {
     char **six_line;
@@ -554,12 +561,12 @@ int ft_get_texture(char **file, t_data *data)
     // mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img[0].img_ptr, 0, 0);
     //fin test
     if (ft_redimension_img(data->img, data) != SUCCESS)
-        return (free_mega_split(split, 6), ERROR);
+        return (free_mega_split(split, 6), ft_destroy_img(data, 4), ERROR);
     //test
     // mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img[0].img_ptr, 25, 0);
     //fin test
     if (ft_get_color(split, data) != SUCCESS)
-        return (ft_free_while_create_xpm(data, split, 4), ERROR);
+        return (ft_free_while_create_xpm(data, split, 4), ft_destroy_img(data, 4), ERROR);
     return (free_mega_split(split, 6), SUCCESS);
 }
 
@@ -629,8 +636,9 @@ char *ft_without_last_line_return(char *str)
 
 int ft_get_map_without_start_end(char ***map, char **after_six)
 {
-    int index_start;
-    int index_end;
+    int     index_start;
+    int     index_end;
+    char    *str;
 
     index_start = 0;
     index_end = ft_strlen_2d(after_six) -1;
@@ -646,10 +654,12 @@ int ft_get_map_without_start_end(char ***map, char **after_six)
     (*map)[0] = NULL;
     while (after_six[index_start] && index_start <= index_end)
     {
-        *map = ft_add_to_2d(*map, ft_without_last_line_return(after_six[index_start]));
+        str = ft_without_last_line_return(after_six[index_start]);
+        *map = ft_add_to_2d(*map, str);
         if (*map == NULL)
-            return (ERROR);
+            return (free (str), ERROR);
         index_start++;
+        free(str);
     }
     return (SUCCESS);
 }
@@ -830,10 +840,11 @@ int ft_cpy_with_frame(char **map, char ***cpy)
     int max_x;
     int max_y;
     int x;
+    char    *str;
 
     max_x = ft_get_max_x(map) + 1;
     max_y = ft_get_max_y(map) + 1;
-    *cpy = malloc(sizeof(char));
+    *cpy = malloc(sizeof(char *));
     if (*cpy == NULL)
         return (ERROR);
     (*cpy)[0] = NULL;
@@ -842,15 +853,19 @@ int ft_cpy_with_frame(char **map, char ***cpy)
     {
         if (x == 0 || x == max_x)
         {
-            *cpy = ft_add_to_2d(*cpy, ft_complete_with_frame("", max_y));
+            str = ft_complete_with_frame("", max_y);
+            *cpy = ft_add_to_2d(*cpy, str);
             if (*cpy == NULL)
-                return (ERROR);
+                return (free(str), ERROR);
+            free(str);
         }
         else
         {
-            *cpy = ft_add_to_2d(*cpy, ft_complete_with_frame(map[x - 1], max_y));
+            str = ft_complete_with_frame(map[x - 1], max_y);
+            *cpy = ft_add_to_2d(*cpy, str);
             if (*cpy == NULL)
-                return (ERROR);
+                return (free(str), ERROR);
+            free(str);
         }
         x++;
     }
@@ -992,25 +1007,40 @@ int ft_parsing(int argc, char **argv, t_data *data)
     int fd;
 
     if (argc != 2)
+    {
+        mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+        mlx_destroy_display(data->mlx_ptr);
         return (ft_error("Wrong number of args\n"), ERROR);
+    }
     if (ft_check_dot_cub(argv[1], &fd) != SUCCESS)
+    {
+        mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+        mlx_destroy_display(data->mlx_ptr);
         return (ft_error("Use an available .cub\n"), ERROR);
+    }
     if (ft_read_file(fd, &file) != SUCCESS)
     {
+        mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+        mlx_destroy_display(data->mlx_ptr);
         close(fd);
         return (ft_error("Error while reading the file\n"), ERROR);
     }
     if (ft_get_texture(file, data) != SUCCESS)
     {
+        mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+        mlx_destroy_display(data->mlx_ptr);
         close(fd);
         free_2d(file);
         return (ft_error("Error with texture\n"), ERROR);
     }
     if (ft_get_map(file, data) != SUCCESS)
     {
+        ft_destroy_img(data, 4);
+        mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+        mlx_destroy_display(data->mlx_ptr);
         close(fd);
         free_2d(file);
-        ft_free_img(data);
+        // ft_free_img(data);
         return (ft_error("Error with map\n"), ERROR);
     }
     close(fd);
