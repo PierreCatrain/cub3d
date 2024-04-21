@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/21 02:54:48 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/21 04:02:02 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/21 20:36:35 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,11 @@ int	ft_is_line_empty(char *str)
 	return (1);
 }
 
-int	ft_get_six_first_line(char **file, char ***six_line)
+int	ft_get_six_first_line(char **file, char ***six_line, \
+		int index)
 {
-	int	index;
-	int	mini_index;
 	int	count;
 
-	index = 0;
-	mini_index = 0;
 	count = 0;
 	*six_line = malloc(sizeof(char *));
 	if (*six_line == NULL)
@@ -59,19 +56,25 @@ int	ft_get_six_first_line(char **file, char ***six_line)
 int	ft_get_texture_part_2(char **split[6], int *index, t_data *data)
 {
 	if (check_and_sort_split(split) != SUCCESS)
-		return (free_mega_split(split, 6), ft_error("Error with value of texture\n"), ERROR);
+		return (free_mega_split(split, 6), \
+				ft_error("Error with value of texture\n"), ERROR);
 	*index = -1;
 	while (++(*index) < 4)
 	{
-		data->img[*index].img_ptr = mlx_xpm_file_to_image(data->mlx_ptr, (split)[*index][1], &data->img[*index].width, &data->img[*index].height);
+		data->img[*index].img_ptr = mlx_xpm_file_to_image(data->mlx_ptr, \
+				(split)[*index][1], &data->img[*index].width, \
+				&data->img[*index].height);
 		if (data->img[*index].img_ptr == NULL)
-			return (ft_free_while_create_xpm(data, split, *index), ft_error("Error while creating image\n"), ERROR);
+			return (ft_free_while_create_xpm(data, split, *index), \
+					ft_error("Error while creating image\n"), ERROR);
 		data->img[*index].addr = NULL;
 	}
 	if (ft_redimension_img(data->img, data) != SUCCESS)
-		return (free_mega_split(split, 6), ft_destroy_img(data, 4), ft_error("Error with redimension of image\n"), ERROR);
+		return (free_mega_split(split, 6), ft_destroy_img(data, 4), \
+				ft_error("Error with redimension of image\n"), ERROR);
 	if (ft_get_color(split, data) != SUCCESS)
-		return (ft_free_while_create_xpm(data, split, 4), ft_destroy_img(data, 4), ft_error("Error with color\n"), ERROR);
+		return (ft_free_while_create_xpm(data, split, 4), \
+			ft_error("Error with color\n"), ERROR);
 	return (SUCCESS);
 }
 
@@ -79,16 +82,18 @@ int	ft_get_texture(char **file, t_data *data)
 {
 	char	**six_line;
 	char	**split[6];
-	int	index;
+	int		index;
 
-	if (ft_get_six_first_line(file, &six_line) != SUCCESS)
+	if (ft_get_six_first_line(file, &six_line, 0) != SUCCESS)
 		return (ft_error("Error with number of texture arguments\n"), ERROR);
 	index = -1;
 	while (++index < 6)
 	{
 		split[index] = ft_split(six_line[index], " \t\n");
 		if (split[index] == NULL)
-			return (free_2d(six_line), free_mega_split(split, index), ft_error("Error with malloc in ft_get_texture\n"), ERROR);
+			return (free_2d(six_line), \
+					free_mega_split(split, index), \
+					ft_error("Error with malloc in ft_get_texture\n"), ERROR);
 	}
 	free_2d(six_line);
 	if (ft_get_texture_part_2(split, &index, data) == ERROR)

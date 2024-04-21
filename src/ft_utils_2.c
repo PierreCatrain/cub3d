@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 21:45:25 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/21 04:40:39 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/21 17:58:06 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,39 @@ int	ft_occ(char *str, char c)
 		if (str[index] == c)
 			count++;
 		index++;
+	}
+	return (count);
+}
+
+int	ft_already_add(t_coord *coord, int x, int y)
+{
+	while (coord != NULL)
+	{
+		if (coord->x == x && coord->y == y)
+			return (1);
+		if (coord->next == NULL)
+			break ;
+		coord = coord->next;
+	}
+	return (0);
+}
+
+int	ft_nb_case(char **map)
+{
+	int	count;
+	int	index;
+	int	mini_index;
+
+	index = -1;
+	count = 0;
+	while (map[++index])
+	{
+		mini_index = -1;
+		while (map[index][++mini_index])
+		{
+			if (ft_occ("NSEO0", map[index][mini_index]))
+				count++;
+		}
 	}
 	return (count);
 }

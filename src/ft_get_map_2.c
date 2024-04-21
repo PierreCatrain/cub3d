@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/21 03:19:37 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/21 05:07:03 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/21 19:59:41 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,28 @@
 
 void	ft_get_start_data_core(t_data *data, int index, int index_mini)
 {
-	data->posX = index;
-	data->posY = index_mini;
+	data->pos_x = index + 0.5;
+	data->pos_y = index_mini + 0.5;
 	if (data->map[index][index_mini] == 'N')
 	{
-		data->dirX = -1;
-		data->dirY = 0;
-		data->planeX = 0;
-		data->planeY = 0.66;
+		data->dir_x = -1;
+		data->dir_y = 0;
+		data->plane_x = 0;
+		data->plane_y = 0.66;
 	}
 	if (data->map[index][index_mini] == 'S')
 	{
-		data->dirX = 1;
-		data->dirY = 0;
-		data->planeX = 0;
-		data->planeY = -0.66;
+		data->dir_x = 1;
+		data->dir_y = 0;
+		data->plane_x = 0;
+		data->plane_y = -0.66;
 	}
 	if (data->map[index][index_mini] == 'E')
 	{
-		data->dirX = 0;
-		data->dirY = 1;
-		data->planeX = 0.66;
-		data->planeY = 0;
+		data->dir_x = 0;
+		data->dir_y = 1;
+		data->plane_x = 0.66;
+		data->plane_y = 0;
 	}
 }
 
@@ -55,10 +55,10 @@ void	ft_get_start_data(t_data *data)
 				ft_get_start_data_core(data, index, index_mini);
 				if (data->map[index][index_mini] == 'W')
 				{
-					data->dirX = 0;
-					data->dirY = -1;
-					data->planeX = -0.66;
-					data->planeY = 0;
+					data->dir_x = 0;
+					data->dir_y = -1;
+					data->plane_x = -0.66;
+					data->plane_y = 0;
 				}
 				data->map[index][index_mini] = '0';
 				return ;

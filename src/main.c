@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:39:11 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/21 04:43:01 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/21 20:40:28 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,4 @@ int	main(int argc, char **argv, char **envp)
 }
 
 //espace entre les virgules
-//pas 3 color
-//trop de virgules
+

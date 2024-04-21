@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 17:08:37 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/21 04:56:20 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/21 20:31:08 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int	ft_check_dot_cub(char *str, int *fd)
 {
+	if (ft_occ(str, '.') != 1)
+		return (ERROR);
 	if (ft_strlen(str) < 3 || ft_strcmp(&str[ft_strlen(str) - 4], ".cub"))
 		return (ERROR);
 	*fd = open(str, O_RDONLY);
