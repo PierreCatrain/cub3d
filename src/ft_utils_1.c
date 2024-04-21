@@ -6,20 +6,20 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 21:32:29 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/20 21:37:23 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/21 04:30:12 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-int ft_strlen(char *str)
+int	ft_strlen(char *str)
 {
-    int index;
+	int	index;
 
-    index = 0;
-    while (str[index])
-        index++;
-    return (index);
+	index = 0;
+	while (str[index])
+		index++;
+	return (index);
 }
 
 int	ft_strlen_2d(char **str)
@@ -54,10 +54,10 @@ char	**ft_add_to_2d(char **base, char *add)
 	char	**new;
 	int		index;
 
-    if (add == NULL)
-    {
-        return (free_2d(base), NULL);
-    }
+	if (add == NULL)
+	{
+		return (free_2d(base), NULL);
+	}
 	new = malloc((ft_strlen_2d(base) + 2) * sizeof(char *));
 	if (new == NULL)
 		return (free_2d(base), NULL);

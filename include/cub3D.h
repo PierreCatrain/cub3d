@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:38:27 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/20 22:25:47 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/21 05:16:03 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,4 +151,27 @@ char	*ft_join_char(char *str, char c);
 
 int ft_strcmp(char *str1, char *str2);
 void ft_error(char *str);
+int ft_occ(char *str, char c);
+
+int ft_read_file(int fd, char ***file);
+
+int ft_get_texture(char **file, t_data *data);
+int check_and_sort_split(char **split[6]);
+int ft_redimension_img(t_img img[4], t_data *data);
+
+void ft_destroy_img(t_data *data, int index);
+int ft_get_color(char **split[6], t_data *data);
+
+void    ft_free_all_img_except_null(t_img img[4]);
+int ft_get_map(char **file, t_data *data);
+int ft_condition_no_line_empty(char **map);
+int ft_check_border(t_data *data);
+int ft_is_close_and_one_block(t_data *data, char **cpy);
+int ft_only_one_player(char **map);
+void ft_get_start_data(t_data *data);
+int ft_condtion_no_unknown_character(char **map, char *charset);
+void ft_destroy_mlx(t_data *data);
+int	ft_cpy_with_frame(char **map, char ***cpy, int max_x, int max_y);
+int	ft_get_max_x(char **map);
+int	ft_get_max_y(char **map);
 #endif

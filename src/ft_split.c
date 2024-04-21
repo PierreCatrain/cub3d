@@ -6,7 +6,7 @@
 /*   By: picatrai <picatrai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 19:20:48 by picatrai          #+#    #+#             */
-/*   Updated: 2024/04/20 20:12:14 by picatrai         ###   ########.fr       */
+/*   Updated: 2024/04/21 04:39:47 by picatrai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,6 @@ void	ft_free_split(char **split, int j)
 	while (j >= 0)
 		free(split[j--]);
 	free(split);
-}
-
-int ft_occ(char *str, char c)
-{
-	int index;
-	int count;
-
-	index = 0;
-	count = 0;
-	while (str[index])
-	{
-		if (str[index] == c)
-			count++;
-		index++;
-	}
-	return (count);
 }
 
 int	ft_mega_malloc(char *str, char *charset)
@@ -52,7 +36,6 @@ int	ft_mega_malloc(char *str, char *charset)
 	}
 	return (count);
 }
-
 
 int	ft_mini_malloc(char *str, char *charset, int i)
 {
@@ -107,10 +90,9 @@ char	**ft_split(char *str, char *charset)
 				return (ft_free_split(split, j), NULL);
 			new = 0;
 		}
-		else if (new == 0 && ft_occ(charset, str[i]) != 0 && ft_occ(charset, str[i + 1]) == 0 \
-		&& str[i + 1] != '\0')
+		else if (new == 0 && ft_occ(charset, str[i]) != 0 \
+				&& ft_occ(charset, str[i + 1]) == 0 && str[i + 1] != '\0')
 			new = 1;
 	}
-	split[++j] = NULL;
-	return (split);
+	return (split[++j] = NULL, split);
 }
